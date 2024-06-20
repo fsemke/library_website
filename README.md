@@ -1,5 +1,5 @@
 # Library 1.0
-#### Video Demo: https://www.youtube.com/watch?v=ZAGGfjAvzlE
+
 #### Description:
 This website is a conceptual solution for organizing our small club library. Every member of the club has free access to it, and the system operates on a trust basis. Currently, the library is managed using a traditional index card system. The goal of this website is to modernize and simplify the process of borrowing and returning books.
 
