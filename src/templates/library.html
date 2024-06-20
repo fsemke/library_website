@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+
+{% block title %}
+Library
+{% endblock %}
+
+
+{% block body %}
+<body class="body">
+
+  {% if current_user.admin %}
+  <div>
+    <h1>Library</h1>
+    <p>Thats the Library!</p>
+    <form action="{{ url_for('addBook') }}" class="flex justify-center">
+      <button type="submit" class="w-60 px-4 py-2 bg-blue-500 text-white rounded-full">
+        Add book
+      </button>
+    </form>
+  </div>
+  {% endif %}
+  <h1 class="text-white mt-12 underline">Available books</h1>
+  <div class="main_library">
+
+    {% for book in available %}
+
+    <a href="{{ url_for('book_detail', book_id=book.id) }}">
+      <div class="item p-2">
+        <div class="bg-white px-6 py-6 rounded-lg shadow-lg text-center">
+          <img src="{{ book['img_url'] }}" class="rounded-lg mb-6">
+          <h2 class=" font-medium text-gray-700">{{ book['title'] }}</h2>
+          <span class="text-blue-500">{{ book['author'] }}</span>
+        </div>
+      </div>
+    </a>
+
+    {% endfor %}
+
+  </div>
+
+  <h1 class="text-white mt-12 underline">Books on loan</h1>
+  <div class="main_library">
+
+    {% for book in not_available %}
+
+    <a href="{{ url_for('book_detail', book_id=book.id) }}">
+      <div class="item p-2">
+        <div class="bg-white px-6 py-6 rounded-lg shadow-lg text-center notAvailable">
+          <img src="{{ book['img_url'] }}" class="rounded-lg mb-6">
+          <h2 class=" font-medium text-gray-700">{{ book['title'] }}</h2>
+          <span class="text-blue-500">{{ book['author'] }}</span>
+        </div>
+      </div>
+    </a>
+
+    {% endfor %}
+
+  </div>
+</body>
+{% endblock %}

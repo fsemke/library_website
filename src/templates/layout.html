@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="../static/style.css">
+    {% block additionalHead %}{% endblock %}
+  </head>
+  <header class="header">
+    <a href="/" class="logo">Logo</a>
+    <nav class="navbar">
+      <a href="/">Home</a>
+      {% if loggedIn == True %}
+      <a href="/library">Library</a>
+      <a href="/users">Users</a>
+        {% if current_user.admin %}
+        <a href="/statistics">Statistics</a>
+        {% endif %}
+      <a href="/logout">Logout</a>
+      {% else %}
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
+      {% endif %}
+    </nav>
+  </header>
+  {% block body %}
+  {% endblock %}
+</html>

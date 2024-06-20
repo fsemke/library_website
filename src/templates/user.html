@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+
+{% block title %}
+User
+{% endblock %}
+
+{% block body %}
+<body class="body">
+  <div>
+    <div class="m-10">
+      <h1>{{ user.firstname }} {{ user.lastname }}</h1>
+      <p>Name: {{ user.firstname }} {{ user.lastname }}</p>
+      <p>username: {{ user.username }}</p>
+    </div>
+    
+    {% if current_user.admin and not user.admin%}
+    <div class="m-10">
+      <p>User is not a Admin</p>
+      <form action="{{ url_for('userToAdmin') }}" method="post" class="flex flex-col flex-wrap content-center mb-5">
+        <input type="hidden" name="user_id" value="{{ user.id }}">
+        <button type="submit" class="w-40 px-4 py-2 bg-blue-500 text-white rounded-full">
+          Upgrade to Admin Status
+        </button>
+      </form>
+    </div>
+    {% endif %}
+
+    {% if current_user.admin and user.admin and current_user.id != user.id%}
+    <div class="m-10">
+      <p>User is a Admin</p>
+      <form action="{{ url_for('adminToUser') }}" method="post" class="flex flex-col flex-wrap content-center m-5">
+        <input type="hidden" name="user_id" value="{{ user.id }}">
+        <button type="submit" class="w-40 px-4 py-2 bg-blue-500 text-white rounded-full">
+          Downgrade to User Status
+        </button>
+      </form>
+    </div>
+    {% endif %}
+
+    {% if current_user.admin or current_user.id == user.id%}
+    <form action="{{ url_for('pwreset') }}" method="post" class="flex flex-col flex-wrap content-center items-center gap-2">
+      <input type="hidden" name="user_id" value="{{ user.id }}">
+      <label for="newPw" class="text-white">Set new password:</label>
+      <input type="password" required name="newPw" id="newPw" placeholder="password" class="w-60">
+      <button type="submit" class="w-40 px-4 py-2 bg-blue-500 text-white rounded-full">
+        Set new Password
+      </button>
+    </form>
+
+    <h1 class="mt-16">Borrowed books</h1>
+    <div class="flex justify-center">
+      <table class="borrowedBooksTable">
+        <tr>
+          <th>Title</th>
+          <th>Borrowed since</th>
+        </tr>
+        
+        {% for book in user.books %}
+        <tr>
+          <a href="{{ url_for('book_detail', book_id=book.id)}}" class="text-white text-xl flex flex-wrap justify-center">
+          <td>
+            <a href="{{ url_for('book_detail', book_id=book.id)}}">{{ book.title }}</a>
+          </td>
+          <td>
+            <a href="{{ url_for('book_detail', book_id=book.id)}}">{{ book.borrowed_date }}</a>
+          </td>
+          </a>
+        </tr>
+        {% endfor %}
+
+      </table>
+    </div>
+      
+    {% endif %}
+
+  </div>
+</body>
+{% endblock %}

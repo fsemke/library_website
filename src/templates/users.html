@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+
+{% block title %}
+Users
+{% endblock %}
+
+{% block additionalHead %}
+<script>
+  function confirmDeletion(userId) {
+      const userConfirmed = confirm("Do you really want to delete the user?");
+      if (userConfirmed) {
+          document.getElementById('deleteForm-' + userId).submit();
+      }
+  }
+</script>
+{% endblock %}
+
+{% block body %}
+<body class="body">
+  <div>
+    <h1>Users</h1>
+    <p>Here is a list of all users:</p>
+
+    
+    
+    <div id="container" class="w-4/5 mx-auto">
+      <div class="flex flex-col sm:flex-row flex-wrap">
+        
+        {% for u in users %}
+        <!-- Card 1 -->
+        <div class="sm:w-1/4 p-2">
+          <div class="{% if u.admin %}bg-amber-400{% else %}bg-white{% endif %} px-6 py-8 rounded-lg shadow-lg text-center">
+            <a href="{{ url_for('user', user_id=u.id) }}">
+              <h2 class="text-xl font-medium text-gray-700">{{ u['firstname'] }} {{ u['lastname'] }}</h2>
+            </a>
+            <span class="text-blue-500 block mb-5">{{ u['username'] }}</span>
+            
+            {% if current_user.admin and u['admin'] == False %}
+            <form id="deleteForm-{{ u['id'] }}" action="{{ url_for('users') }}" method="post">
+              <input type="hidden" name="user_id" value="{{ u['id'] }}">
+              <button type="button" onclick="confirmDeletion({{ u['id'] }})" class="px-4 py-2 bg-blue-500 text-white rounded-full">
+                Delete User
+              </button>
+            </form>
+            {% endif %}
+            {% if u.admin %}
+            <p class="text-lg text-gray-700">Admin</p>
+            {% endif %}
+
+          </div>
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+
+
+
+  </div>
+</body>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+
+{% block title %}
+{{ book.title }}
+{% endblock %}
+
+
+{% block body %}
+<body class="body">
+
+  <div>
+    <div class="flex justify-center">
+      <img src="{{ book.img_url }}" class="w-96">
+    </div>
+    <h1>{{ book.title }}</h1>
+    <p class="text-white text-2xl">{{ book.author }}</p>
+    <p>{{ book.published_date }}</p>
+  </div>
+
+  {% if book.borrowed_from == None %}
+  <div class="m-6">
+    <p class="text-green-500">Book is available</p>
+    <form action="{{ url_for('book_detail', book_id=book.id) }}" method="post" class="flex justify-center">
+      <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-full"
+        >Borrow this book</button
+      >
+    </form>
+  </div>
+  {% elif book.borrowed_from == current_user.id %}
+  <div class="m-6">
+    <p class="text-green-500">You borrowed the book</p>
+    <form action="{{ url_for('return_book', book_id=book.id) }}" method="post" class="flex justify-center">
+      <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-full"
+        >Return book</button
+      >
+    </form>
+  </div>
+  {% else %}
+  <div class="m-6">
+    <p class="text-red-500">book is not available</p>
+  </div>
+  {% endif %}
+  {% if current_user.admin %}
+  <h1 class="mt-16">History</h1>
+
+  <div class="flex justify-center">
+    <table class="borrowedBooksTable">
+      <tr>
+        <th>User</th>
+        <th>Action</th>
+        <th>Date</th>
+      </tr>
+      
+      {% for entry in history %}
+      <tr>
+        <td>
+          {{ entry.user.firstname }} {{ entry.user.lastname }}
+        </td>
+        <td>
+          {{ entry.action }}
+        </td>
+        <td>
+          {{ entry.date }}
+        </td>
+      </tr>
+      {% endfor %}
+
+    </table>
+  </div>
+
+
+  {% endif %}
+
+</body>
+{% endblock %}
