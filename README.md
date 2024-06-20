@@ -9,7 +9,7 @@ This website is a conceptual solution for organizing our small club library. Eve
 To begin using the system, users need to register and log in. If you are the first user in the database, you will automatically be granted admin status. Our system uses token-based authentication to verify user identities and ensure secure access.
 
 ## Library
-The library section allows users to browse through all the books available. The books are categorized into two sections: "Available books" and "Books on loan". Each book entry is clickable, providing more details when selected.
+The library section allows users to browse through all the books available. The books are categorized into two sections: "Available books" and "Borrowed Books". Each book entry is clickable, providing more details when selected.
 
 ### Admin Capabilities
 If you are an admin, you have additional capabilities. You can create a new book entry by providing all necessary details, including the title, author, published date, and a link to an image of the book cover.
