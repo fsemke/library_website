@@ -1,5 +1,5 @@
 # Library 1.0
-![library](https://github.com/fsemke/library_website/assets/94831163/48f49e82-162f-4703-b14c-1704b7d6c9cc)
+![library](https://github.com/fsemke/library_website/assets/94831163/aeddf840-cad3-49c9-a15c-a359b1fca7ae)
 
 ## Description:
 This website is a conceptual solution for organizing our small club library. Every member of the club has free access to it, and the system operates on a trust basis. Currently, the library is managed using a traditional index card system. The goal of this website is to modernize and simplify the process of borrowing and returning books.
