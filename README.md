@@ -1,6 +1,6 @@
 # Library 1.0
 
-#### Description:
+## Description:
 This website is a conceptual solution for organizing our small club library. Every member of the club has free access to it, and the system operates on a trust basis. Currently, the library is managed using a traditional index card system. The goal of this website is to modernize and simplify the process of borrowing and returning books.
 
 # Functionality
@@ -66,7 +66,7 @@ In the users section, a JavaScript popup is implemented to prevent accidental de
 ## User
 This page displays all the books currently borrowed by a specific user.
 
-#### How It's Made
+# How It's Made
 This project is entirely coded using Flask, along with some JavaScript. The backend relies on an SQLite3 database, structured with three interconnected tables to manage users, books, and borrowing history. SQLAlchemy is used to connect Flask with the database, providing an ORM (Object Relational Mapping) layer for efficient data management.
 
 # .env
@@ -79,8 +79,7 @@ The .env file needs two variables:
 
 # Deploy
 ## Build
-``docker build -t florian/lib-app:v1.0.0 .``
+``docker build -t fsemke/library:v1.0.0 .``
 
 ## Run docker
-``docker run --name library -p 5000:5000 -v ./db:/app/instance -d florian/lib-app:v1.0.0``
-
+``docker run --name library -p 5000:5000 -v .:/app/instance -d fsemke/library:v1.0.0``
