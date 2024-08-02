@@ -14,6 +14,7 @@ app = Flask(__name__)
 CORS(app)
 
 UPLOAD_FOLDER = 'static/uploads/'
+DB_FOLDER = 'instance/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
@@ -117,7 +118,6 @@ def addBook():
         if file and allowed_file(file.filename):
             filename = secure_filename(title)
             upload_path = os.path.join(UPLOAD_FOLDER, filename + '.' + get_extension(file.filename))
-            os.makedirs(os.path.dirname(upload_path), exist_ok=True)
             file.save(upload_path)
         else:
             redirect(url_for('addbook'))
@@ -187,6 +187,26 @@ def return_book(book_id):
         db.session.add(new_history)
         db.session.commit()
     return redirect(url_for('book_detail', book_id=book.id))
+
+@app.route('/deletebook/<int:book_id>', methods=['POST'])
+@login_required
+def delete_book(book_id):
+    if not current_user.admin:
+        print('Not an admin')
+        return redirect(url_for('library'))
+
+    book = Book.query.get(book_id)
+    try:
+        os.remove(os.path.join('.' + book.img_url))
+    except OSError as e:
+        print(f"File '{book.title}' could not be deleted: {e}")
+
+    try:
+        db.session.delete(book)
+        db.session.commit()
+    except:
+        print('book not deleted from database')
+    return redirect(url_for('library'))
 
 @app.route('/statistics')
 @login_required
@@ -329,5 +349,7 @@ def logout():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+    os.makedirs(os.path.dirname(UPLOAD_FOLDER), exist_ok=True)
+    os.makedirs(os.path.dirname(DB_FOLDER), exist_ok=True)
     app.run(debug=True)
     # app.run(host='0.0.0.0', port=5000)

@@ -5,6 +5,16 @@
 {{ book.title }}
 {% endblock %}
 
+{% block additionalHead %}
+<script>
+  function confirmDeletion(bookId) {
+      const userConfirmed = confirm("Do you really want to delete this book?");
+      if (userConfirmed) {
+          document.getElementById('deleteForm-' + bookId).submit();
+      }
+  }
+</script>
+{% endblock %}
 
 {% block body %}
 <body class="body">
@@ -41,7 +51,16 @@
     <p class="text-red-500">book is not available</p>
   </div>
   {% endif %}
+
   {% if current_user.admin %}
+
+  <h1 class="mt-16">Admin features</h1>
+  <form action="{{ url_for('delete_book', book_id=book.id) }}" method="post" class="flex justify-center">
+    <button type="submit" onclick="confirmDeletion({{ book.id }})" class="px-4 py-2 bg-blue-500 text-white rounded-full"
+      >Delete book</button
+    >
+  </form>
+
   <h1 class="mt-16">History</h1>
 
   <div class="flex justify-center">
