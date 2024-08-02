@@ -5,12 +5,16 @@ from flask_bcrypt import Bcrypt
 from datetime import datetime
 from flask_cors import CORS
 from dotenv import load_dotenv
+from werkzeug.utils import secure_filename
 import os
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
+
+UPLOAD_FOLDER = 'static/uploads/'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
@@ -49,7 +53,7 @@ class Book(db.Model):
     __tablename__ ='book'
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(128), nullable=False)
+    title = db.Column(db.String(128), unique=True, nullable=False)
     author = db.Column(db.String(128), nullable=False)
     published_date = db.Column(db.Date, nullable=False)
     img_url = db.Column(db.String(128), nullable=True)
@@ -90,6 +94,11 @@ def library():
 
     return render_template('library.html', available=available, not_available=not_available, loggedIn = True)
 
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def get_extension(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower()
 
 @app.route('/addbook', methods=['GET','POST'])
 @login_required
@@ -98,9 +107,21 @@ def addBook():
         return redirect(url_for('library'))
     if request.method == 'POST':
         # Create new book
+        file = request.files['image']
         title = request.form['title']
         author = request.form['author']
-        imgUrl = request.form['image_url']
+        if file.filename == '':
+            return redirect(url_for('addbook'))
+
+        upload_path = ''
+        if file and allowed_file(file.filename):
+            filename = secure_filename(title)
+            upload_path = os.path.join(UPLOAD_FOLDER, filename + '.' + get_extension(file.filename))
+            os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+            file.save(upload_path)
+        else:
+            redirect(url_for('addbook'))
+        imgUrl = os.path.join('/', upload_path)
         publishedDate = request.form['published_date']
         publishedDate = datetime.strptime(publishedDate, '%Y-%m-%d')
 
@@ -308,5 +329,5 @@ def logout():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    # app.run(debug=True)
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True)
+    # app.run(host='0.0.0.0', port=5000)
