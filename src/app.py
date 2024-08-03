@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request
+from flask import Flask, render_template, url_for, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from flask_bcrypt import Bcrypt
@@ -111,27 +111,38 @@ def addBook():
         file = request.files['image']
         title = request.form['title']
         author = request.form['author']
-        if file.filename == '':
-            return redirect(url_for('addbook'))
 
-        upload_path = ''
-        if file and allowed_file(file.filename):
-            filename = secure_filename(title)
-            upload_path = os.path.join(UPLOAD_FOLDER, filename + '.' + get_extension(file.filename))
-            file.save(upload_path)
-        else:
-            redirect(url_for('addbook'))
-        imgUrl = os.path.join('/', upload_path)
+
         publishedDate = request.form['published_date']
         publishedDate = datetime.strptime(publishedDate, '%Y-%m-%d')
 
-        new_book = Book(
-            title=title,
-            author=author,
-            published_date=publishedDate,
-            img_url=imgUrl)
-        db.session.add(new_book)
-        db.session.commit()
+        try:
+            new_book = Book(
+                title=title,
+                author=author,
+                published_date=publishedDate,
+                img_url="",
+                admin_notes="")
+            db.session.add(new_book)
+            db.session.commit()
+
+            new_book = db.session.get(Book, new_book.id)
+            if file.filename == '':
+                return redirect(url_for('addBook'))
+            upload_path = ''
+            if file and allowed_file(file.filename):
+                filename = secure_filename(title)
+                upload_path = os.path.join(UPLOAD_FOLDER, filename + '.' + get_extension(file.filename))
+                file.save(upload_path)
+            else:
+                return redirect(url_for('addBook'))
+            new_book.img_url = os.path.join('/', upload_path)
+            db.session.commit()
+        except Exception as e:
+            print(f"Error while adding the book: {e}")
+            flash("Can't save the book, is the title unique?")
+            return redirect(url_for('addBook'))
+
         return redirect(url_for('library'))
     
     else:
