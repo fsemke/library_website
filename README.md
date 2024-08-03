@@ -83,4 +83,4 @@ The .env file needs two variables:
 ``docker build -t fsemke/library:v1.0.0 .``
 
 ## Run docker
-``docker run --name library -p 5000:5000 -v ./instance/:/app/instance -v ./static/uploads:/app/static/uploads -d fsemke/library:v1.0.0``
+``docker run --name library -p 5000:5000 -v ./instance:/app/src/instance -v ./uploads:/app/src/static/uploads -d fsemke/library:v1.0.0``

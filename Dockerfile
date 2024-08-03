@@ -19,5 +19,7 @@ COPY . .
 # Expose the port your application will run on
 EXPOSE 8080
 
+WORKDIR /app/src
+
 # Specify the command to run on container start
-CMD ["python", "src/app.py"]
+CMD ["python", "app.py"]
