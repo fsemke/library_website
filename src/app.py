@@ -404,5 +404,5 @@ if __name__ == "__main__":
         db.create_all()
     os.makedirs(os.path.dirname(UPLOAD_FOLDER), exist_ok=True)
     os.makedirs(os.path.dirname(DB_FOLDER), exist_ok=True)
-    app.run(debug=True)
-    # app.run(host='0.0.0.0', port=5000)
+    # app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
