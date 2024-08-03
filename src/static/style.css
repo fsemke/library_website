@@ -82,21 +82,6 @@ p {
 	justify-content: center;
 }
 
-.addBook form {
-	display: flex;
-	width: 400px;
-	flex-direction: column;
-}
-
-.addBook label {
-	margin-bottom: 5px;
-}
-
-.addBook input,
-.addBook button {
-	margin-bottom: 10px;
-}
-
 .notAvailable {
 	background-color: rgb(179, 179, 179) !important;
 }

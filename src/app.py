@@ -54,11 +54,11 @@ class Book(db.Model):
     __tablename__ ='book'
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(128), nullable=False)
+    title = db.Column(db.String(128), unique=True, nullable=False)
     author = db.Column(db.String(128), nullable=False)
     published_date = db.Column(db.Date, nullable=False)
     img_url = db.Column(db.String(128), nullable=True)
-    
+    admin_notes = db.Column(db.String(128), nullable=True)
     borrowed_from = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     borrowed_date = db.Column(db.Date, nullable=True)
     user = db.relationship('User', back_populates='books')
@@ -200,6 +200,16 @@ def book_detail(book_id):
         )\
         .limit(15)
     return render_template('book_detail.html', book=book, history=history, loggedIn=True)
+
+@app.route('/book/<int:book_id>/note', methods=['POST'])
+@login_required
+def save_note(book_id):
+    if not current_user.admin:
+        return redirect(url_for('book_detail', book_id=book_id))
+    book = Book.query.get_or_404(book_id)
+    book.admin_notes = request.form['textarea']
+    db.session.commit()
+    return redirect(url_for('book_detail', book_id=book_id))
 
 @app.route('/bookreturn/<int:book_id>', methods=['POST'])
 @login_required

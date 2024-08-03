@@ -14,23 +14,34 @@ Welcome
 
     <div class="addBook">
       <form method="post" enctype="multipart/form-data">
-        <label for="title" class="text-white">Title</label>
-        <input type="text" required name="title" placeholder="Title" id="title">
-
-        <label for="author" class="text-white">Author</label>
-        <input type="text" required name="author" placeholder="Author" id="author">
-
-        <label for="image" class="text-white">Img Uploade</label>
-        <input type="file" required name="image" id="image">
-
-        <label for="published_date" class="text-white">Published Date</label>
-        <input type="date" required name="published_date" id="published_date">
-
-        <button type="submit" value="Uploade"
-        class="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg mt-2"
-        [disabled]="!userForm.form.valid">
-        Add book
-        </button>
+        <div class="w-96 grid gap-6 mb-6 md:grid-cols-1">
+          <div>
+            <label for="title" class="block mb-2 font-medium text-gray-900 dark:text-white">Title</label>
+            <input type="text" required name="title" placeholder="Title" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          </div>
+  
+          <div>
+            <label for="author" class="block mb-2 font-medium text-gray-900 dark:text-white">Author</label>
+            <input type="text" required name="author" placeholder="Author" id="author" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          </div>
+  
+          <div>
+            <label for="image" class="block mb-2 font-medium text-gray-900 dark:text-white">Img Uploade</label>
+            <input type="file" required name="image" id="image" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input">
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">JPEG, JPG or PNG.</p>
+          </div>
+  
+          <div>
+            <label for="published_date" class="block mb-2 font-medium text-gray-900 dark:text-white">Published Date</label>
+            <input type="date" required name="published_date" id="published_date" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          </div>
+  
+          <button type="submit" value="Uploade"
+          class="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg mt-2"
+          [disabled]="!userForm.form.valid">
+          Add book
+          </button>
+        </div>
       </form>
     </div>
 

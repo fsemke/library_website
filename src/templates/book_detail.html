@@ -78,6 +78,16 @@
       >Delete book</button
     >
   </form>
+  <form id="notes" action="{{ url_for('save_note', book_id=book.id) }}" method="post" class="flex justify-center">
+    <div class="mb-6 mt-8">
+      <label for="note" class="block text-white text-2xl">Admin notes</label>
+      <textarea id="note" name="textarea" rows="4" cols="50" type="text" class="block w-96 h-32 p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      >{{ book.admin_notes }}</textarea>
+      <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-full"
+        >Save</button
+      >
+    </div>
+  </form>
 
   <h1 class="mt-16">History</h1>
 
