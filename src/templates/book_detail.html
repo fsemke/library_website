@@ -59,61 +59,64 @@
   {% endif %}
 
   {% if current_user.admin %}
-
-  <h1 class="mt-16">Admin features</h1>
-    {% if book.borrowed_from != None and book.borrowed_from != current_user.id %}
-    <form id="return" action="{{ url_for('return_book', book_id=book.id) }}" method="post" class="flex justify-center">
-      <button type="button" onclick="confirmReturn({{ book.id }})" class="px-4 py-2 bg-blue-500 text-white rounded-full"
-        >Mark book as Available</button
-      >
-    </form>
-    {% endif %}
-  <form action="{{ url_for('editBook', book_id=book.id) }}" method="get" class="flex justify-center">
-    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-full"
-      >Edit book</button
-    >
-  </form>
-  <form id="delete" action="{{ url_for('delete_book', book_id=book.id) }}" method="post" class="flex justify-center">
-    <button type="button" onclick="confirmDeletion({{ book.id }})" class="px-4 py-2 bg-blue-500 text-white rounded-full"
-      >Delete book</button
-    >
-  </form>
-  <form id="notes" action="{{ url_for('save_note', book_id=book.id) }}" method="post" class="flex justify-center">
-    <div class="mb-6 mt-8">
-      <label for="note" class="block text-white text-2xl">Admin notes</label>
-      <textarea id="note" name="textarea" rows="4" cols="50" type="text" class="block w-96 h-32 p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-      >{{ book.admin_notes }}</textarea>
-      <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-full"
-        >Save</button
-      >
+  <div class="bg-admin p-1">
+    <h1 class="mt-16">Admin features</h1>
+    <div class="flex gap-6 justify-center mt-6">
+        {% if book.borrowed_from != None and book.borrowed_from != current_user.id %}
+        <form id="return" action="{{ url_for('return_book', book_id=book.id) }}" method="post" class="flex justify-center">
+          <button type="button" onclick="confirmReturn({{ book.id }})" class="px-4 py-2 bg-blue-500 text-white rounded-full"
+            >Mark book as Available</button
+          >
+        </form>
+        {% endif %}
+      <form action="{{ url_for('editBook', book_id=book.id) }}" method="get" class="flex justify-center">
+        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-full"
+          >Edit book</button
+        >
+      </form>
+      <form id="delete" action="{{ url_for('delete_book', book_id=book.id) }}" method="post" class="flex justify-center">
+        <button type="button" onclick="confirmDeletion({{ book.id }})" class="px-4 py-2 bg-blue-500 text-white rounded-full"
+          >Delete book</button
+        >
+      </form>
     </div>
-  </form>
-
-  <h1 class="mt-16">History</h1>
-
-  <div class="flex justify-center">
-    <table class="borrowedBooksTable">
-      <tr>
-        <th>User</th>
-        <th>Action</th>
-        <th>Date</th>
-      </tr>
-      
-      {% for entry in history %}
-      <tr>
-        <td>
-          {{ entry.user.firstname }} {{ entry.user.lastname }}
-        </td>
-        <td>
-          {{ entry.action }}
-        </td>
-        <td>
-          {{ entry.date }}
-        </td>
-      </tr>
-      {% endfor %}
-
-    </table>
+    <form id="notes" action="{{ url_for('save_note', book_id=book.id) }}" method="post" class="flex justify-center">
+      <div class="mb-6 mt-8">
+        <label for="note" class="block text-white text-2xl">Admin notes</label>
+        <textarea id="note" name="textarea" rows="4" cols="50" type="text" class="block w-96 h-32 p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        >{{ book.admin_notes }}</textarea>
+        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-full"
+          >Save</button
+        >
+      </div>
+    </form>
+  
+    <h1 class="mt-16">History</h1>
+  
+    <div class="flex justify-center">
+      <table class="borrowedBooksTable">
+        <tr>
+          <th>User</th>
+          <th>Action</th>
+          <th>Date</th>
+        </tr>
+        
+        {% for entry in history %}
+        <tr>
+          <td>
+            {{ entry.user.firstname }} {{ entry.user.lastname }}
+          </td>
+          <td>
+            {{ entry.action }}
+          </td>
+          <td>
+            {{ entry.date }}
+          </td>
+        </tr>
+        {% endfor %}
+  
+      </table>
+    </div>
   </div>
 
 

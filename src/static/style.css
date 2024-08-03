@@ -76,6 +76,10 @@ p {
 	color: antiquewhite;
 }
 
+.bg-admin {
+	background-color:#022536;
+}
+
 .addBook {
 	display: flex;
 	align-items: center;
