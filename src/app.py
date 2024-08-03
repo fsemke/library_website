@@ -54,7 +54,7 @@ class Book(db.Model):
     __tablename__ ='book'
 
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(128), unique=True, nullable=False)
+    title = db.Column(db.String(128), nullable=False)
     author = db.Column(db.String(128), nullable=False)
     published_date = db.Column(db.Date, nullable=False)
     img_url = db.Column(db.String(128), nullable=True)
@@ -136,6 +136,38 @@ def addBook():
     
     else:
         return render_template('add_book.html', loggedIn = True)
+    
+@app.route('/editbook/<int:book_id>', methods=['GET','POST'])
+@login_required
+def editBook(book_id):
+    if request.method == 'POST':
+        if not current_user.admin:
+            return redirect(url_for('book_detail', book_id=book_id))
+        book = Book.query.get(book_id)
+        try:
+            if book.title != request.form['title']:
+                renamed_url = os.path.join(UPLOAD_FOLDER, secure_filename(request.form['title']) + '.' + get_extension(book.img_url))
+                os.rename('.' + book.img_url, renamed_url)
+                print(renamed_url)
+                book.img_url = '/' + renamed_url
+        except Exception as e:
+            print(f"Can't rename the file: {e}")
+        book.title = request.form['title']
+        book.author = request.form['author']
+        publishedDate = request.form['published_date']
+        book.published_date = datetime.strptime(publishedDate, '%Y-%m-%d')
+        file = request.files['image']
+        if file and allowed_file(file.filename) and file.filename != '':
+            filename = secure_filename(book.title)
+            upload_path = os.path.join(UPLOAD_FOLDER, filename + '.' + get_extension(file.filename))
+            file.save(upload_path)
+            book.img_url = os.path.join('/', upload_path)
+        db.session.commit()
+        return redirect(url_for('book_detail', book_id=book_id))
+
+    book = Book.query.get(book_id)
+    return render_template('edit_book.html', book = book, loggedIn = True)
+
 
 @app.route('/book/<int:book_id>', methods=['GET', 'POST'])
 @login_required
@@ -173,7 +205,7 @@ def book_detail(book_id):
 @login_required
 def return_book(book_id):
     book = Book.query.get_or_404(book_id)
-    if (book.borrowed_from == current_user.id):
+    if book.borrowed_from == current_user.id or current_user.admin:
         book.borrowed_from = None
         book.borrowed_date = None
 

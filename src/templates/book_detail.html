@@ -10,7 +10,13 @@
   function confirmDeletion(bookId) {
       const userConfirmed = confirm("Do you really want to delete this book?");
       if (userConfirmed) {
-          document.getElementById('deleteForm-' + bookId).submit();
+          document.getElementById('delete').submit();
+      }
+  }
+  function confirmReturn(bookId) {
+      const userConfirmed = confirm("Are you sure to mark this book as available?");
+      if (userConfirmed) {
+          document.getElementById('return').submit();
       }
   }
 </script>
@@ -55,8 +61,20 @@
   {% if current_user.admin %}
 
   <h1 class="mt-16">Admin features</h1>
-  <form action="{{ url_for('delete_book', book_id=book.id) }}" method="post" class="flex justify-center">
-    <button type="submit" onclick="confirmDeletion({{ book.id }})" class="px-4 py-2 bg-blue-500 text-white rounded-full"
+    {% if book.borrowed_from != None and book.borrowed_from != current_user.id %}
+    <form id="return" action="{{ url_for('return_book', book_id=book.id) }}" method="post" class="flex justify-center">
+      <button type="button" onclick="confirmReturn({{ book.id }})" class="px-4 py-2 bg-blue-500 text-white rounded-full"
+        >Mark book as Available</button
+      >
+    </form>
+    {% endif %}
+  <form action="{{ url_for('editBook', book_id=book.id) }}" method="get" class="flex justify-center">
+    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-full"
+      >Edit book</button
+    >
+  </form>
+  <form id="delete" action="{{ url_for('delete_book', book_id=book.id) }}" method="post" class="flex justify-center">
+    <button type="button" onclick="confirmDeletion({{ book.id }})" class="px-4 py-2 bg-blue-500 text-white rounded-full"
       >Delete book</button
     >
   </form>

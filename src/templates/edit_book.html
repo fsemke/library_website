@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+
+{% block title %}
+Welcome
+{% endblock %}
+
+
+{% block body %}
+<body class="body">
+  <div>
+    <h1>Edit book</h1>
+    
+
+    <div class="addBook">
+      <form method="post" enctype="multipart/form-data">
+        <label for="title" class="text-white">Title</label>
+        <input type="text" required name="title" value="{{ book.title }}" placeholder="Title" id="title">
+
+        <label for="author" class="text-white">Author</label>
+        <input type="text" required name="author" value="{{ book.author }}" placeholder="Author" id="author">
+
+        <label for="image" class="text-white">Img Uploade</label>
+        <input type="file" name="image" id="image">
+
+        <label for="published_date" class="text-white">Published Date</label>
+        <input type="date" required name="published_date" value="{{ book.published_date }}" id="published_date">
+
+        <button type="submit" value="Uploade"
+        class="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg mt-2"
+        [disabled]="!userForm.form.valid">
+        Save
+        </button>
+      </form>
+    </div>
+
+  </div>
+</body>
+{% endblock %}
