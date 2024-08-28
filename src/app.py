@@ -58,6 +58,7 @@ class Book(db.Model):
     author = db.Column(db.String(128), nullable=False)
     published_date = db.Column(db.Date, nullable=False)
     img_url = db.Column(db.String(128), nullable=True)
+    description = db.Column(db.Text, nullable=True)
     admin_notes = db.Column(db.String(128), nullable=True)
     borrowed_from = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     borrowed_date = db.Column(db.Date, nullable=True)
@@ -83,6 +84,7 @@ class History(db.Model):
 @app.route("/")
 def home():
     if current_user.is_authenticated:
+        return redirect(url_for('library'))
         return render_template('home_logged_in.html', loggedIn = True)
     else:
         return render_template('home_logged_out.html', loggedIn = False)
@@ -111,6 +113,8 @@ def addBook():
         file = request.files['image']
         title = request.form['title']
         author = request.form['author']
+        descrip = request.form['description']
+        print(f"Description: {descrip}")
 
 
         publishedDate = request.form['published_date']
@@ -121,6 +125,7 @@ def addBook():
                 title=title,
                 author=author,
                 published_date=publishedDate,
+                description=descrip,
                 img_url="",
                 admin_notes="")
             db.session.add(new_book)
@@ -165,6 +170,7 @@ def editBook(book_id):
             print(f"Can't rename the file: {e}")
         book.title = request.form['title']
         book.author = request.form['author']
+        book.description = request.form['description']
         publishedDate = request.form['published_date']
         book.published_date = datetime.strptime(publishedDate, '%Y-%m-%d')
         file = request.files['image']
@@ -276,7 +282,7 @@ def statistic():
             book.borrowed_days = (datetime.now().date() - book.borrowed_date).days
 
         return render_template('statistics.html', books=books, loggedIn=True)
-    return redirect(url_for('home'))
+    return redirect(url_for('library'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -404,5 +410,5 @@ if __name__ == "__main__":
         db.create_all()
     os.makedirs(os.path.dirname(UPLOAD_FOLDER), exist_ok=True)
     os.makedirs(os.path.dirname(DB_FOLDER), exist_ok=True)
-    # app.run(debug=True)
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True)
+    # app.run(host='0.0.0.0', port=5000)

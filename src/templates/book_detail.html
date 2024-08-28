@@ -34,12 +34,14 @@
     <p>{{ book.published_date }}</p>
   </div>
 
+  
+  
   {% if book.borrowed_from == None %}
   <div class="m-6">
     <p class="text-green-500">Book is available</p>
     <form action="{{ url_for('book_detail', book_id=book.id) }}" method="post" class="flex justify-center">
       <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-full"
-        >Borrow this book</button
+      >Borrow this book</button
       >
     </form>
   </div>
@@ -48,13 +50,20 @@
     <p class="text-green-500">You borrowed the book</p>
     <form action="{{ url_for('return_book', book_id=book.id) }}" method="post" class="flex justify-center">
       <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-full"
-        >Return book</button
+      >Return book</button
       >
     </form>
   </div>
   {% else %}
   <div class="m-6">
     <p class="text-red-500">book is not available</p>
+  </div>
+  {% endif %}
+
+  {% if book.description != None and book.description != "" %}
+  <div class="mt-16 mb-16">
+    <h2>Description</h2>
+    <p class="description" >{{ book.description }}</p>
   </div>
   {% endif %}
 
