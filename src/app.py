@@ -307,6 +307,11 @@ def register():
         return redirect(url_for('dashboard'))
     
     if request.method == 'POST':
+        registercode = request.form['registercode']
+        
+        if os.getenv('REGISTERCODE') != registercode:
+            return redirect(url_for('register'))
+        
         username = request.form['username']
         password = request.form['password']
         firstname = request.form['firstname']
