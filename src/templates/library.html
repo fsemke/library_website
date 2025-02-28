@@ -21,11 +21,14 @@ Library
   </div>
   {% endif %}
   <h1 class="text-white mt-12 underline">Available books</h1>
+  <div class="flex justify-center">
+    <input type="text" name="search" placeholder="Search" id="search" class="w-1/2 p-2 border rounded"></input>
+  </div>
   <div class="main_library">
 
     {% for book in available %}
 
-    <a href="{{ url_for('book_detail', book_id=book.id) }}">
+    <a href="{{ url_for('book_detail', book_id=book.id) }}" class="book-item">
       <div class="item p-2">
         <div class="bg-white px-6 py-6 rounded-lg shadow-lg text-center">
           <img src="{{ book['img_url'] }}" class="rounded-lg mb-6">
@@ -39,12 +42,30 @@ Library
 
   </div>
 
+  <!-- Script to search in books -->
+  <script>
+    document.getElementById('search').addEventListener('input', function() {
+      var searchTerm = this.value.toLowerCase();
+      var books = document.querySelectorAll('.book-item');
+      
+      console.log(searchTerm);
+      books.forEach(function(book) {
+        var title = book.querySelector('h2').textContent.toLowerCase();
+        if (title.includes(searchTerm)) {
+          book.style.display = '';
+        } else {
+          book.style.display = 'none';
+        }
+      });
+    });
+  </script>
+
   <h1 class="text-white mt-12 underline">Borrowed Books</h1>
   <div class="main_library">
 
     {% for book in not_available %}
 
-    <a href="{{ url_for('book_detail', book_id=book.id) }}">
+    <a href="{{ url_for('book_detail', book_id=book.id) }}" class="book-item">
       <div class="item p-2">
         <div class="bg-white px-6 py-6 rounded-lg shadow-lg text-center notAvailable">
           <img src="{{ book['img_url'] }}" class="rounded-lg mb-6">
