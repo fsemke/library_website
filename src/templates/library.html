@@ -13,7 +13,7 @@ Library
   <div>
     <h1>Library</h1>
     <p>Thats the Library!</p>
-    <form action="{{ url_for('addBook') }}" class="flex justify-center">
+    <form action="{{ url_for('library.addBook') }}" class="flex justify-center">
       <button type="submit" class="w-60 px-4 py-2 bg-blue-500 text-white rounded-full">
         Add book
       </button>
@@ -28,7 +28,7 @@ Library
 
     {% for book in available %}
 
-    <a href="{{ url_for('book_detail', book_id=book.id) }}" class="book-item">
+    <a href="{{ url_for('library.book_detail', book_id=book.id) }}" class="book-item">
       <div class="item p-2">
         <div class="bg-white px-6 py-6 rounded-lg shadow-lg text-center">
           <img src="{{ book['img_url'] }}" class="rounded-lg mb-6">
@@ -65,7 +65,7 @@ Library
 
     {% for book in not_available %}
 
-    <a href="{{ url_for('book_detail', book_id=book.id) }}" class="book-item">
+    <a href="{{ url_for('library.book_detail', book_id=book.id) }}" class="book-item">
       <div class="item p-2">
         <div class="bg-white px-6 py-6 rounded-lg shadow-lg text-center notAvailable">
           <img src="{{ book['img_url'] }}" class="rounded-lg mb-6">
