@@ -6,11 +6,7 @@ import os
 
 from models import Book, History, User
 from extension import db
-
-# Doppelt, später schöner machen
-UPLOAD_FOLDER = 'static/uploads/'
-DB_FOLDER = 'instance/'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+from config import ALLOWED_EXTENSIONS, UPLOAD_DIRECTORY
 
 library_bp = Blueprint('library', __name__)
 
@@ -62,7 +58,7 @@ def addBook():
             upload_path = ''
             if file and allowed_file(file.filename):
                 filename = secure_filename(title)
-                upload_path = os.path.join(UPLOAD_FOLDER, filename + '.' + get_extension(file.filename))
+                upload_path = os.path.join(UPLOAD_DIRECTORY, filename + '.' + get_extension(file.filename))
                 file.save(upload_path)
             else:
                 return redirect(url_for('library.addBook'))
@@ -87,7 +83,7 @@ def editBook(book_id):
         book = Book.query.get(book_id)
         try:
             if book.title != request.form['title']:
-                renamed_url = os.path.join(UPLOAD_FOLDER, secure_filename(request.form['title']) + '.' + get_extension(book.img_url))
+                renamed_url = os.path.join(UPLOAD_DIRECTORY, secure_filename(request.form['title']) + '.' + get_extension(book.img_url))
                 os.rename('.' + book.img_url, renamed_url)
                 print(renamed_url)
                 book.img_url = '/' + renamed_url
@@ -101,7 +97,7 @@ def editBook(book_id):
         file = request.files['image']
         if file and allowed_file(file.filename) and file.filename != '':
             filename = secure_filename(book.title)
-            upload_path = os.path.join(UPLOAD_FOLDER, filename + '.' + get_extension(file.filename))
+            upload_path = os.path.join(UPLOAD_DIRECTORY, filename + '.' + get_extension(file.filename))
             file.save(upload_path)
             book.img_url = os.path.join('/', upload_path)
         db.session.commit()

@@ -8,15 +8,12 @@ import os
 from extension import db, bcrypt
 from models import User, Book
 from routes import auth_bp, library_bp, user_bp
+from config import UPLOAD_DIRECTORY, DB_DIRECTORY
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
-
-UPLOAD_FOLDER = 'static/uploads/'
-DB_FOLDER = 'instance/'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
@@ -66,7 +63,7 @@ def statistic():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    os.makedirs(os.path.dirname(UPLOAD_FOLDER), exist_ok=True)
-    os.makedirs(os.path.dirname(DB_FOLDER), exist_ok=True)
+    os.makedirs(os.path.dirname(UPLOAD_DIRECTORY), exist_ok=True)
+    os.makedirs(os.path.dirname(DB_DIRECTORY), exist_ok=True)
     app.run(debug=True)
     # app.run(host='0.0.0.0', port=5000)
