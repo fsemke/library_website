@@ -4,6 +4,7 @@ from datetime import datetime
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
+import sys
 
 from extension import db, bcrypt
 from models import User, Book
@@ -65,5 +66,6 @@ if __name__ == "__main__":
         db.create_all()
     os.makedirs(os.path.dirname(UPLOAD_DIRECTORY), exist_ok=True)
     os.makedirs(os.path.dirname(DB_DIRECTORY), exist_ok=True)
-    # app.run(debug=True)
-    app.run(host='0.0.0.0', port=5000)
+    
+    debug_mode = len(sys.argv) > 1 and sys.argv[1].lower() == 'debug'
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
