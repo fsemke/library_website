@@ -74,6 +74,7 @@ This project is entirely coded using Flask, along with some JavaScript. The back
 The .env file needs two variables:
 - DATABASE_URI for example: 'sqlite:///db.db'
 - SECRET_KEY
+- REGISTERCODE
 
 # To start the website in dev mode
 ``python3 app.py``
