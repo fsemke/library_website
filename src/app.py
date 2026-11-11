@@ -1,22 +1,37 @@
-from flask import Flask, render_template, url_for, redirect
-from flask_login import LoginManager, login_required, current_user
-from datetime import datetime
-from flask_cors import CORS
-from dotenv import load_dotenv
 import os
 import sys
+from datetime import datetime
 
-from extension import db, bcrypt
-from models import User, Book
+from dotenv import load_dotenv
+from flask import Flask, redirect, render_template, send_from_directory, url_for
+from flask_cors import CORS
+from flask_login import LoginManager, current_user, login_required
+
+from config import BASE_DIR, DB_DIRECTORY, UPLOAD_DIRECTORY
+from extension import bcrypt, db
+from models import Book, User
 from routes import auth_bp, library_bp, user_bp
-from config import UPLOAD_DIRECTORY, DB_DIRECTORY
 
-load_dotenv()
+load_dotenv(dotenv_path=BASE_DIR / '.env')
 
-app = Flask(__name__)
+UPLOAD_DIRECTORY.mkdir(parents=True, exist_ok=True)
+DB_DIRECTORY.mkdir(parents=True, exist_ok=True)
+
+app = Flask(
+    __name__,
+    static_folder=str(BASE_DIR / "src" /"static"),
+    template_folder=str(BASE_DIR / "src" / "templates")
+)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
+db_uri = os.getenv('DATABASE_URI')
+if db_uri and db_uri.startswith('sqlite:///'):
+    db_file = db_uri.replace('sqlite:///', '')
+    db_path = DB_DIRECTORY / db_file
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
@@ -43,6 +58,11 @@ def home():
     else:
         return render_template('home_logged_out.html', loggedIn = False)
 
+@app.route('/uploads/<path:filename>')
+@login_required
+def uploaded_file(filename):
+    return send_from_directory(str(UPLOAD_DIRECTORY), filename)
+
 @app.route('/statistics')
 @login_required
 def statistic():
@@ -64,8 +84,6 @@ def statistic():
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    os.makedirs(os.path.dirname(UPLOAD_DIRECTORY), exist_ok=True)
-    os.makedirs(os.path.dirname(DB_DIRECTORY), exist_ok=True)
-    
+
     debug_mode = len(sys.argv) > 1 and sys.argv[1].lower() == 'debug'
     app.run(host='0.0.0.0', port=5000, debug=debug_mode)

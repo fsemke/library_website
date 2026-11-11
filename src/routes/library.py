@@ -1,12 +1,14 @@
-from flask import Blueprint, render_template, url_for, redirect, request, flash
-from flask_login import login_required, current_user
-from datetime import datetime
-from werkzeug.utils import secure_filename
 import os
+from datetime import datetime
+from pathlib import Path
 
-from models import Book, History, User
-from extension import db
+from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask_login import current_user, login_required
+from werkzeug.utils import secure_filename
+
 from config import ALLOWED_EXTENSIONS, UPLOAD_DIRECTORY
+from extension import db
+from models import Book, History, User
 
 library_bp = Blueprint('library', __name__)
 
@@ -22,7 +24,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_extension(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower()
+    return filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
 
 @library_bp.route('/addbook', methods=['GET','POST'])
 @login_required
@@ -57,12 +59,14 @@ def addBook():
                 return redirect(url_for('library.addBook'))
             upload_path = ''
             if file and allowed_file(file.filename):
+                ext = get_extension(file.filename)
                 filename = secure_filename(title)
-                upload_path = os.path.join(UPLOAD_DIRECTORY, filename + '.' + get_extension(file.filename))
-                file.save(upload_path)
+                filename_full = f"{filename}.{ext}"
+                upload_path = UPLOAD_DIRECTORY / filename_full
+                file.save(str(upload_path))
             else:
                 return redirect(url_for('library.addBook'))
-            new_book.img_url = os.path.join('/', upload_path)
+            new_book.img_url = f"/uploads/{filename_full}"
             db.session.commit()
         except Exception as e:
             print(f"Error while adding the book: {e}")
@@ -70,10 +74,9 @@ def addBook():
             return redirect(url_for('library.addBook'))
 
         return redirect(url_for('library.library'))
-    
     else:
         return render_template('add_book.html', loggedIn = True)
-    
+
 @library_bp.route('/editbook/<int:book_id>', methods=['GET','POST'])
 @login_required
 def editBook(book_id):
@@ -83,10 +86,14 @@ def editBook(book_id):
         book = Book.query.get(book_id)
         try:
             if book.title != request.form['title']:
-                renamed_url = os.path.join(UPLOAD_DIRECTORY, secure_filename(request.form['title']) + '.' + get_extension(book.img_url))
-                os.rename('.' + book.img_url, renamed_url)
-                print(renamed_url)
-                book.img_url = '/' + renamed_url
+              old_filename = Path(book.img_url).name
+              ext = old_filename.split('.')[-1]
+              new_filename = secure_filename(request.form['title']) + '.' + ext
+              old_path = UPLOAD_DIRECTORY / old_filename
+              new_path = UPLOAD_DIRECTORY / new_filename
+              if old_path.exists():
+                os.rename(old_path, new_path)
+              book.img_url = f"/uploads/{new_filename}"
         except Exception as e:
             print(f"Can't rename the file: {e}")
         book.title = request.form['title']
@@ -96,10 +103,12 @@ def editBook(book_id):
         book.published_date = datetime.strptime(publishedDate, '%Y-%m-%d')
         file = request.files['image']
         if file and allowed_file(file.filename) and file.filename != '':
-            filename = secure_filename(book.title)
-            upload_path = os.path.join(UPLOAD_DIRECTORY, filename + '.' + get_extension(file.filename))
-            file.save(upload_path)
-            book.img_url = os.path.join('/', upload_path)
+          ext = get_extension(file.filename)
+          filename = secure_filename(book.title)
+          filename_full = f"{filename}.{ext}"
+          upload_path = UPLOAD_DIRECTORY / filename_full
+          file.save(str(upload_path))
+          book.img_url = f"/uploads/{filename_full}"
         db.session.commit()
         return redirect(url_for('library.book_detail', book_id=book_id))
 
@@ -123,7 +132,7 @@ def book_detail(book_id):
             user_id=user.id,
             book_id=book.id
             )
-        
+
         db.session.add(new_history)
         db.session.commit()
         return redirect(url_for('library.book_detail', book_id=book.id))
@@ -163,7 +172,7 @@ def return_book(book_id):
             user_id=current_user.id,
             book_id=book.id
             )
-        
+
         db.session.add(new_history)
         db.session.commit()
     return redirect(url_for('library.book_detail', book_id=book.id))
@@ -177,9 +186,13 @@ def delete_book(book_id):
 
     book = Book.query.get(book_id)
     try:
-        os.remove(os.path.join('.' + book.img_url))
+      if book.img_url:
+        filename = Path(book.img_url).name
+        file_path = UPLOAD_DIRECTORY / filename
+        if file_path.exists():
+          os.remove(file_path)
     except OSError as e:
-        print(f"File '{book.title}' could not be deleted: {e}")
+      print(f"File '{book.title}' could not be deleted: {e}")
 
     try:
         db.session.delete(book)
