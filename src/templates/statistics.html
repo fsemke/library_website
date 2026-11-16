@@ -1,45 +1,69 @@
 {% extends "layout.html" %}
 
-
-{% block title %}
-Statistics
-{% endblock %}
-
+{% block title %}Statistics{% endblock %}
 
 {% block body %}
-<body class="body">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Library Statistics</h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Overview of all currently borrowed books ordered by borrow duration.</p>
+        </div>
+        <span class="self-start sm:self-auto px-3.5 py-1.5 rounded-full text-xs font-semibold bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300">
+            {{ books|length }} Active Loans
+        </span>
+    </div>
 
-  
-  <h1>Borrowed Books</h1>
-
-  <div class="flex justify-center">
-    <table class="borrowedBooksTable">
-      <tr>
-        <th>User</th>
-        <th>Book</th>
-        <th>Borrowed on</th>
-        <th>Borrowed days</th>
-      </tr>
-      
-      {% for book in books %}
-      <tr>
-        <td>
-          {{ book.user.firstname }} {{ book.user.lastname }}
-        </td>
-        <td>
-          {{ book.title }}
-        </td>
-        <td>
-          {{ book.borrowed_date }}
-        </td>
-        <td>
-          {{ book.borrowed_days }}
-        </td>
-      </tr>
-      {% endfor %}
-
-    </table>
-  </div>
-
-</body>
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 text-xs font-bold uppercase tracking-wider text-slate-400">
+                        <th class="py-4 px-6">User</th>
+                        <th class="py-4 px-6">Book</th>
+                        <th class="py-4 px-6">Borrowed On</th>
+                        <th class="py-4 px-6 text-right">Borrowed Days</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80 text-sm">
+                    {% for book in books %}
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                        <td class="py-4 px-6 font-medium text-slate-800 dark:text-slate-200">
+                            <a href="{{ url_for('user.user', user_id=book.user.id) }}" class="hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                                {{ book.user.firstname }} {{ book.user.lastname }}
+                            </a>
+                        </td>
+                        <td class="py-4 px-6 font-semibold text-slate-900 dark:text-white">
+                            <a href="{{ url_for('library.book_detail', book_id=book.id) }}" class="hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                                {{ book.title }}
+                            </a>
+                        </td>
+                        <td class="py-4 px-6 text-slate-500 dark:text-slate-400">{{ book.borrowed_date }}</td>
+                        <td class="py-4 px-6 text-right">
+                            {% if book.borrowed_days >= 30 %}
+                                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/70 text-rose-700 dark:text-rose-400">
+                                    {{ book.borrowed_days }} days
+                                </span>
+                            {% elif book.borrowed_days >= 14 %}
+                                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/70 text-amber-700 dark:text-amber-400">
+                                    {{ book.borrowed_days }} days
+                                </span>
+                            {% else %}
+                                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400">
+                                    {{ book.borrowed_days }} days
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="py-12 text-center text-slate-400 text-sm">
+                            <i class="fa-solid fa-circle-check text-2xl mb-2 block text-emerald-500"></i>
+                            All books are currently returned!
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

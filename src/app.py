@@ -39,12 +39,12 @@ db.init_app(app)
 bcrypt.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'auth.login'
 
 
 @login_manager.user_loader
 def load_user(user_id):
-  return User.query.get(int(user_id))
+  return db.session.get(User, int(user_id))
 
 
 app.register_blueprint(auth_bp)
@@ -78,7 +78,7 @@ def statistic():
             book.borrowed_days = (datetime.now().date() - book.borrowed_date).days
 
         return render_template('statistics.html', books=books, loggedIn=True)
-    return redirect(url_for('library'))
+    return redirect(url_for('library.library'))
 
 
 if __name__ == "__main__":

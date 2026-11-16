@@ -1,61 +1,75 @@
 {% extends "layout.html" %}
 
-
-{% block title %}
-Welcome
-{% endblock %}
-
+{% block title %}Add Book{% endblock %}
 
 {% block body %}
-<body class="body">
-  <div>
-    <h1>Add book</h1>
-    
-    
-    <div class="addBook">
-      <form method="post" enctype="multipart/form-data">
-        <div class="w-96 grid gap-6 mb-6 md:grid-cols-1">
-          {% for message in get_flashed_messages() %}
-            <div class="text-red-500 text-2xl justify-center alert alert-{{ message['category'] }}">
-              {{ message }}
-            </div>
-          {% endfor %}
-          <div>
-            <label for="title" class="block mb-2 font-medium text-gray-900 dark:text-white">Title</label>
-            <input type="text" required name="title" placeholder="Title" id="title" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-          </div>
-  
-          <div>
-            <label for="author" class="block mb-2 font-medium text-gray-900 dark:text-white">Author</label>
-            <input type="text" required name="author" placeholder="Author" id="author" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-          </div>
-  
-          <div>
-            <label for="image" class="block mb-2 font-medium text-gray-900 dark:text-white">Img Uploade</label>
-            <input type="file" required name="image" id="image" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input">
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">JPEG, JPG or PNG.</p>
-          </div>
-  
-          <div>
-            <label for="published_date" class="block mb-2 font-medium text-gray-900 dark:text-white">Published Date</label>
-            <input type="date" required name="published_date" id="published_date" class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-          </div>
-
-          <div class="mb-6 mt-8">
-            <label for="description" class="block text-white text-2xl">Description</label>
-            <textarea id="description" name="description" rows="4" cols="50" type="text" class="block w-96 h-32 p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            ></textarea>
-          </div>
-  
-          <button type="submit" value="Uploade"
-          class="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg mt-2"
-          [disabled]="!userForm.form.valid">
-          Add book
-          </button>
+    <div class="max-w-2xl mx-auto">
+        <div class="mb-6">
+            <a href="{{ url_for('library.library') }}" class="inline-flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Back to Library</span>
+            </a>
         </div>
-      </form>
-    </div>
 
-  </div>
-</body>
+        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-none p-6 sm:p-10">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-11 h-11 rounded-2xl bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-book-medical"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Add New Book</h1>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Fill in the details to add a book to the library.</p>
+                </div>
+            </div>
+
+            {% for message in get_flashed_messages() %}
+            <div class="mb-6 p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-sm font-medium flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>{{ message }}</span>
+            </div>
+            {% endfor %}
+
+            <form method="post" enctype="multipart/form-data" class="space-y-5">
+                <div>
+                    <label for="title" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Title</label>
+                    <input type="text" required name="title" placeholder="e.g. The Midnight Library" id="title"
+                           class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label for="author" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Author</label>
+                        <input type="text" required name="author" placeholder="e.g. Matt Haig" id="author"
+                               class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                    </div>
+                    <div>
+                        <label for="published_date" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Published Date</label>
+                        <input type="date" required name="published_date" id="published_date"
+                               class="w-full px-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="image" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Cover Image</label>
+                    <input type="file" required name="image" id="image" accept=".png,.jpg,.jpeg"
+                           class="block w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-sky-50 dark:file:bg-sky-950 file:text-sky-700 dark:file:text-sky-300 hover:file:bg-sky-100 dark:hover:file:bg-sky-900 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-950 cursor-pointer">
+                    <p class="mt-1.5 text-xs text-slate-400">Accepted formats: JPEG, JPG or PNG.</p>
+                </div>
+
+                <div>
+                    <label for="description" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Description</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Write a brief summary of the book..."
+                              class="w-full p-4 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all"></textarea>
+                </div>
+
+                <div class="pt-3 flex items-center justify-end gap-3">
+                    <a href="{{ url_for('library.library') }}" class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Cancel</a>
+                    <button type="submit" class="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-sm font-semibold shadow-md shadow-sky-600/20 active:scale-95 transition-all inline-flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Add Book</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

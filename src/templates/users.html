@@ -1,15 +1,11 @@
 {% extends "layout.html" %}
 
-
-{% block title %}
-Users
-{% endblock %}
+{% block title %}Users{% endblock %}
 
 {% block additionalHead %}
 <script>
   function confirmDeletion(userId) {
-      const userConfirmed = confirm("Do you really want to delete the user?");
-      if (userConfirmed) {
+      if (confirm("Do you really want to delete this user?")) {
           document.getElementById('deleteForm-' + userId).submit();
       }
   }
@@ -17,46 +13,58 @@ Users
 {% endblock %}
 
 {% block body %}
-<body class="body">
-  <div>
-    <h1>Users</h1>
-    <p>Here is a list of all users:</p>
-
-    
-    
-    <div id="container" class="w-4/5 mx-auto">
-      <div class="flex flex-col sm:flex-row flex-wrap">
-        
-        {% for u in users %}
-        <!-- Card 1 -->
-        <div class="sm:w-1/4 p-2">
-          <div class="{% if u.admin %}bg-amber-400{% else %}bg-white{% endif %} px-6 py-8 rounded-lg shadow-lg text-center">
-            <a href="{{ url_for('user.user', user_id=u.id) }}">
-              <h2 class="text-xl font-medium text-gray-700">{{ u['firstname'] }} {{ u['lastname'] }}</h2>
-            </a>
-            <span class="text-blue-500 block mb-5">{{ u['username'] }}</span>
-            
-            {% if current_user.admin and u['admin'] == False %}
-            <form id="deleteForm-{{ u['id'] }}" action="{{ url_for('user.users') }}" method="post">
-              <input type="hidden" name="user_id" value="{{ u['id'] }}">
-              <button type="button" onclick="confirmDeletion({{ u['id'] }})" class="px-4 py-2 bg-blue-500 text-white rounded-full">
-                Delete User
-              </button>
-            </form>
-            {% endif %}
-            {% if u.admin %}
-            <p class="text-lg text-gray-700">Admin</p>
-            {% endif %}
-
-          </div>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Users</h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage library members and administrator permissions.</p>
         </div>
-        {% endfor %}
-
-      </div>
+        <span class="self-start sm:self-auto px-3.5 py-1.5 rounded-full text-xs font-semibold bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+            {{ users|length }} Total Users
+        </span>
     </div>
 
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        {% for u in users %}
+        <div class="bg-white dark:bg-slate-900 border {% if u.admin %}border-amber-300/80 dark:border-amber-500/40{% else %}border-slate-200 dark:border-slate-800{% endif %} rounded-2xl p-6 shadow-sm hover:shadow-lg hover:shadow-sky-500/5 transition-all flex flex-col justify-between">
+            <div class="flex flex-col items-center text-center">
+                <a href="{{ url_for('user.user', user_id=u.id) }}" class="group flex flex-col items-center">
+                    <div class="w-16 h-16 rounded-2xl {% if u.admin %}bg-gradient-to-tr from-amber-500 to-orange-500 shadow-amber-500/20{% else %}bg-gradient-to-tr from-sky-600 to-indigo-500 shadow-sky-500/20{% endif %} text-white flex items-center justify-center text-xl font-bold shadow-lg mb-4 group-hover:scale-105 transition-transform">
+                        {{ u.firstname[0] | upper }}{{ u.lastname[0] | upper }}
+                    </div>
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
+                        {{ u.firstname }} {{ u.lastname }}
+                    </h2>
+                </a>
+                <span class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">@{{ u.username }}</span>
 
+                <div class="mt-3">
+                    {% if u.admin %}
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-950/70 text-amber-700 dark:text-amber-400">
+                            <i class="fa-solid fa-shield-halved mr-1"></i>Admin
+                        </span>
+                    {% else %}
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                            Member
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
 
-  </div>
-</body>
+            <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-center gap-2">
+                <a href="{{ url_for('user.user', user_id=u.id) }}" class="flex-1 text-center px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors">
+                    View Profile
+                </a>
+
+                {% if current_user.admin and u.admin == False %}
+                <form id="deleteForm-{{ u.id }}" action="{{ url_for('user.users') }}" method="post">
+                    <input type="hidden" name="user_id" value="{{ u.id }}">
+                    <button type="button" onclick="confirmDeletion({{ u.id }})" class="px-3 py-2 rounded-xl text-xs font-semibold bg-rose-50 dark:bg-rose-950/50 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 transition-colors" title="Delete User">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 {% endblock %}
