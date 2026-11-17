@@ -92,7 +92,7 @@
             <nav class="hidden md:flex items-center gap-1">
                 {% if current_user.is_authenticated %}
                     <a href="{{ url_for('library.library') }}" class="px-3.5 py-2 rounded-xl text-sm font-medium transition-colors {% if request.endpoint == 'library.library' %}bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400{% else %}text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800{% endif %}">
-                        <i class="fa-solid fa-books mr-1.5 opacity-75"></i>Library
+                        <i class="fa-solid fa-book-bookmark mr-1.5 opacity-75"></i>Library
                     </a>
                     <a href="{{ url_for('user.users') }}" class="px-3.5 py-2 rounded-xl text-sm font-medium transition-colors {% if request.endpoint in ['user.users', 'user.user'] %}bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400{% else %}text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800{% endif %}">
                         <i class="fa-solid fa-users mr-1.5 opacity-75"></i>Users
@@ -141,7 +141,7 @@
         <!-- Mobile Navigation Bar -->
         {% if current_user.is_authenticated %}
         <div class="md:hidden border-t border-slate-200 dark:border-slate-800 px-4 py-2 flex items-center gap-2 overflow-x-auto">
-            <a href="{{ url_for('library.library') }}" class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap {% if request.endpoint == 'library.library' %}bg-sky-600 text-white{% else %}text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800{% endif %}">Library</a>
+            <a href="{{ url_for('library.library') }}" class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap {% if request.endpoint == 'library.library' %}bg-sky-600 text-white{% else %}text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800{% endif %}"><i class="fa-solid fa-book-bookmark mr-1"></i>Library</a>
             <a href="{{ url_for('user.users') }}" class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap {% if request.endpoint in ['user.users', 'user.user'] %}bg-sky-600 text-white{% else %}text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800{% endif %}">Users</a>
             {% if current_user.admin %}
                 <a href="{{ url_for('statistic') }}" class="px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap {% if request.endpoint == 'statistic' %}bg-sky-600 text-white{% else %}text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800{% endif %}">Statistics</a>
