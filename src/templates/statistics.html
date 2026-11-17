@@ -37,7 +37,7 @@
                                 {{ book.title }}
                             </a>
                         </td>
-                        <td class="py-4 px-6 text-slate-500 dark:text-slate-400">{{ book.borrowed_date }}</td>
+                        <td class="py-4 px-6 text-slate-500 dark:text-slate-400">{{ book.borrowed_date.strftime('%d.%m.%Y') if book.borrowed_date else '' }}</td>
                         <td class="py-4 px-6 text-right">
                             {% if book.borrowed_days >= 30 %}
                                 <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/70 text-rose-700 dark:text-rose-400">

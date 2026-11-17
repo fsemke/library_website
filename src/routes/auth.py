@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, request
-from flask_login import current_user, login_user, login_required, logout_user
-from extension import bcrypt, db
 import os
 
+from flask import Blueprint, redirect, render_template, request, url_for
+from flask_login import current_user, login_required, login_user, logout_user
+
+from extension import bcrypt, db
 from models import User
 
 auth_bp = Blueprint('auth', __name__)
@@ -28,13 +29,13 @@ def login():
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
-    
+
     if request.method == 'POST':
         registercode = request.form['registercode']
-        
+
         if os.getenv('REGISTERCODE') != registercode:
             return redirect(url_for('auth.register'))
-        
+
         username = request.form['username']
         password = request.form['password']
         firstname = request.form['firstname']

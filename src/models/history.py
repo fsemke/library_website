@@ -1,5 +1,6 @@
 from extension import db
 
+
 class History(db.Model):
     __tablename__ = 'history'
 

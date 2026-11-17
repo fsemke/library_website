@@ -1,5 +1,6 @@
 from extension import db
 
+
 class Book(db.Model):
     __tablename__ ='book'
 

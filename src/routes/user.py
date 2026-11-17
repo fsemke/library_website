@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template, url_for, redirect, request
-from flask_login import login_required, current_user
+from flask import Blueprint, redirect, render_template, request, url_for
+from flask_login import current_user, login_required
 
+from extension import bcrypt, db
 from models import User
-from extension import db, bcrypt
 
 user_bp = Blueprint('user', __name__)
 
